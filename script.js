@@ -47,6 +47,10 @@ function showCards(){
 function dragstart_handler(e){
   e.dataTransfer.setData("text/html", e.target.id);
   e.dataTransfer.dropEffect = "move";
+
+
+
+  e.target.classList.add('red');
 }
 
 function dragover_handler(e) {
@@ -56,6 +60,7 @@ function dragover_handler(e) {
 
 function drop_handler(e){
   e.preventDefault();
+
   const data = e.dataTransfer.getData("text/html");
 
   const selectedCard = document.getElementById(data).dataset.cardNumber; // nereikalingas
@@ -65,6 +70,7 @@ function drop_handler(e){
   console.log('Kompo: ', computerCard.dataset.cardNumber, 'Tinkama Eilutė: ', getSuitableRow(computerCard.dataset.cardNumber));
   console.log('Kompui liko ', ComputerHandCards.length, 'kortos: ', ComputerHandCards);
 
+  document.getElementById(data).removeEventListener('dragstart', dragstart_handler);
   document.querySelector('#selected-cards .person').appendChild(document.getElementById(data));
   document.querySelector('#selected-cards .pc').appendChild(computerCard);
 
@@ -87,12 +93,9 @@ function performAction(){
 }
 
 function getComputerCard(){
-  // įvertinti kortų kiekį eilutuje, kad nedėtu kortos nors ir su mažiausiu skirtumu ten kur daug kortų
   let bestOption;
   const rows = Array.from(document.querySelectorAll('.row'));
-  // const rowWithLeastCards = Math.min.apply(null, rows.map((row) => {return row.childElementCount;}));
   const rowWithLeastCards = rows.find((row) => {row.childElementCount === Math.min.apply(null, rows.map((row) => {return row.childElementCount;})); return row;})
-
   const lastCardInRowNumber = parseInt(rowWithLeastCards.lastChild.dataset.cardNumber);
 
   for (let i = 0, minDiff; i < ComputerHandCards.length; i++) {
@@ -100,7 +103,6 @@ function getComputerCard(){
       bestOption = ComputerHandCards[i];
       break;
     }else {
-
       // const lastCardsNumber = parseInt(getSuitableRow(ComputerHandCards[i]).lastChild.dataset.cardNumber);
       const diff = ComputerHandCards[i] - lastCardInRowNumber;
         if(diff < minDiff || minDiff == null) {
@@ -133,7 +135,6 @@ function getComputerCard(){
 
 function placeCard(card, player){
   const suitableRow = getSuitableRow(card.dataset.cardNumber);
-
   suitableRow.appendChild(card);
   if(parseInt(suitableRow.childElementCount) > 5){
     takeCards(suitableRow, player);
@@ -148,27 +149,22 @@ function chooseRowToTake(card, player){
     const bestRowToTake = rows.find(row => {if(row.childElementCount == rowWithLeastCards){return row;}});
     bestRowToTake.appendChild(card);
     takeCards(bestRowToTake, player);
-
     performAction();
-
-
   }else {
     function selectRow(e){
-      const row = e.target;
-      row.appendChild(card);
+      const row = e.currentTarget;
+      row.appendChild(card); // placeCard?
       takeCards(row, player);
 
       rows.forEach(row => {
         row.classList.remove('red');
-        row.removeEventListener('click', selectRow);
-
+        row.removeEventListener('click', selectRow, true);
         performAction();
-
       });
     }
     rows.forEach(row => {
       row.classList.add('red');
-      row.addEventListener('click', selectRow);
+      row.addEventListener('click', selectRow, true);
     });
   }
 
@@ -194,6 +190,6 @@ function takeCards(row, player){
 
 showCards();
 console.log(ComputerHandCards);
-document.querySelectorAll('.card').forEach((card) => {card.addEventListener('dragstart', dragstart_handler)});
+document.querySelectorAll('#hand .card').forEach((card) => {card.addEventListener('dragstart', dragstart_handler)});
 document.querySelector('#selected-cards .person').addEventListener('dragover', dragover_handler);
 document.querySelector('#selected-cards .person').addEventListener('drop', drop_handler);
