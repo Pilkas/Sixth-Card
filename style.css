@@ -1,58 +1,121 @@
+body {
+  background-color: #ffeead;
+  font-family: 'Helvetica', sans-serif;
+  color: #fff;
+}
+#rules, #popup {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -35%);
+  width: 400px;
+  background-color: #ff6f69;
+  line-height: 1.5;
+  padding: 25px;
+  border: #fff solid 3px;
+  display: none;
+}
+#popup{
+  background-color: #96ceb4;
+  z-index: 1;
+  display: block;
+}
+button {
+  background-color: #ffcc5c;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  padding: 15px 32px;
+  cursor: pointer;
+}
 #container {
-
+  /*display: none;*/
+}
+#container h1{
+  color: #ff6f69;
+  text-align: center;
+}
+#used-cards{
+  display: flex;
 }
 #pc-bad {
-  display: inline-block;
+  background-color: yellow;
+}
+#bad {
+  margin: 10px;
+  border: 5px #ffcc5c solid;
+  border-radius: 10px;
+}
+#bad .card{
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 #table {
-  background-color: #abcdef;
-  overflow: hidden;
+  display: flex;
+  margin: 0 auto;
+  width: 1160px;
+}
+#table h2 {
+  text-align: center;
 }
 #rows {
-  display: inline-block;
+
 }
+
 #selected-cards {
-  display: inline-block;
+  border: #88d8b0 5px dashed;
+  border-radius: 10px;
+  width: 200px;
+  height: 200px;
+  margin: 50px;
 }
-#selected-cards .person,
-#selected-cards .pc {
-  display: inline-block;
+#selected-cards .person {
   background-color: #a0db8e;
   border: 1px white solid;
   border-radius: 10px;
   width: 80px;
   height: 110px;
 }
-#selected-cards .pc{
-  background-color: grey;
+#player {
+  width: 453px;
 }
 #hand {
-  background-color: #ffefef;
-  overflow: hidden;
+  margin: 10px;
+  border: 5px #ffcc5c solid;
+  border-radius: 10px;
+  height: 220px;
 }
-.row{
-  overflow: hidden;
-  border: 1px white solid;
+.row {
+  border: 5px #88d8b0 solid;
   border-radius: 10px;
   width: 400px;
   height: 110px;
   margin: 10px;
 }
-.red{
-  border: 1px solid red;
-  cursor: pointer;
-}
 .card {
-  float: left;
   display: inline-block;
-  background-color: #a7b5c3;
+  background-color: #ff6f69;
   width: 70px;
   height: 100px;
   margin: 5px;
-  color: #fff;
   font-size: 32px;
   text-align: center;
   line-height: 100px;
   border-radius: 10px;
+  cursor: grab;
+  transition: 1s;
+}
+
+.red{
+  border: 5px #ff6f69 solid;
   cursor: pointer;
+}
+#score {
+  color: #ff6f69;
+  font-size: 24px;
+  text-align: center;
+}
+
+.my{
+  background-color: lightblue;
 }

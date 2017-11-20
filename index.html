@@ -2,27 +2,41 @@
 <html lang="lt">
 <head>
   <meta charset="UTF-8">
-  <title>Šeštas ima</title>
+  <title>Sixth Card</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<div id="rules">
+  <h1>Sixth Card</h1>
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  <button id="start">Start Game!</button>
+</div>
 <div id="container">
-  <div id="pc-bad"></div>
+  <h1>Sixth Card</h1>
+  <div id="score">
+      <p>Computer <span id="pc-points">0</span> : <span id="person-points">0</span> <span>Player</span></p>
+      <!--<button name="restart">Restart</button> -->
+
+  </div>
   <div id="table">
     <div id="rows">
+      <h2>Cards On Table</h2>
       <div class="row"></div>
       <div class="row"></div>
       <div class="row"></div>
       <div class="row"></div>
     </div>
-    <div id="selected-cards">
-      <div class="pc"></div>
-      <div class="person"></div>
+    <div id="selected-cards"></div>
+    <div id="player">
+      <h2>Your cards</h2>
+      <div id="hand"></div>
+      <div id="bad"></div>
     </div>
   </div>
-  <div id="hand"></div>
-  <div id="bad"></div>
+  <div id ="used-cards">
+    <div id="pc-bad"></div>
+
+  </div>
 </div>
 
 <script src="script.js"></script>
