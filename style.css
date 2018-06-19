@@ -1,5 +1,6 @@
 body {
-  background-color: #ffeead;
+  /* background-color: #ffeead; */
+  background-color: dimgray;
   font-family: 'Helvetica', sans-serif;
   color: #fff;
 }
@@ -57,9 +58,6 @@ button {
 }
 #table h2 {
   text-align: center;
-}
-#rows {
-
 }
 
 #selected-cards {

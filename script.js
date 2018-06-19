@@ -1,3 +1,13 @@
+const rules = document.querySelector('#rules');
+const container = document.querySelector('#container');
+document.querySelector('#start').addEventListener('click', () => {
+  fadeOut(rules, 500);
+
+  setTimeout(function(){
+    newRound();
+    fadeIn(container, 500);
+  }, 1000);
+});
 function fadeOut(el, duration) {
   var s = el.style, step = 25/(duration || 300);
   s.opacity = s.opacity || 1;
@@ -15,35 +25,10 @@ window.onload = function() {
   newRound();
 };
 
-function animateMotion(a, b){
-  function offset(el) {
-    let rect = el.getBoundingClientRect(),
-    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
-  }
-
-  const x = offset(b).left - offset(a).left + 80;
-  const y = offset(b).top - offset(a).top;
-
-  a.style.transform = 'translate('+ x + 'px,'+ y + 'px)';
-  // a.style.transform = 'rotate(1turn)';
-}
-
-const rules = document.querySelector('#rules');
-const container = document.querySelector('#container');
-
-document.querySelector('#start').addEventListener('click', () => {
-  fadeOut(rules, 500);
-
-  setTimeout(function(){
-    newRound();
-    fadeIn(container, 500);
-  }, 1000);
-});
-
 let cardsInUse = [];
 let computerCards, personCards;
+document.querySelector('#selected-cards').addEventListener('dragover', dragover_handler);
+document.querySelector('#selected-cards').addEventListener('drop', drop_handler);
 
 function isPersonsCard(cardNumber){
   return personCards.includes(parseInt(cardNumber));
@@ -156,7 +141,6 @@ function drop_handler(e){
   document.querySelector('#selected-cards').appendChild(drawCard(getComputerCard()));
 
   console.log('Mano korta:', document.querySelectorAll('#selected-cards .card')[0].dataset.cardNumber, 'Kompo korta:',  document.querySelectorAll('#selected-cards .card')[1].dataset.cardNumber);
-
   setTimeout(performAction, 1000);
 }
 
@@ -213,7 +197,6 @@ function performAction(){
     return;
   }
 }
-
 // function placeCard(card){
 //   const suitableRow = getSuitableRow(card.dataset.cardNumber);
 //   console.log('Tinkama eilute: ', suitableRow);
@@ -249,50 +232,20 @@ function takeCards(row, isPerson){
     console.log('Paėmimo ciklas baigtas');
     return performAction();
   }
-  // for (let i = 0; i <= cards.length - 1; i++) {
-  //   if (isPerson) {
-  //     animateMotion(cards[i], document.querySelector('#bad'));
-  //     cards[i].addEventListener('transitionend', (e) => {
-  //       e.target.style.transform = 'none';
-  //       document.querySelector('#bad').appendChild(cards[i]);
-  //       console.log('Žaidėjas pasiėmė', cards[i].dataset.cardNumber);
-  //     });
-  //   } else {
-  //     console.log('Kompas pasiėmė', cards[i].dataset.cardNumber);
-  //     cards[i].remove();
-  //   }
-  //
-  //   incrementPoints(isPerson);
-  //   console.log('i:',i, 'cards length', cards.length);
-  //   if(i == cards.length - 1){performAction();}
-  // }
-  // console.log('Paėmimo ciklas baigtas');
-  // return;
-  // if(isPersonsCard) {
-  //   for (let i = 0; row.childElementCount > 1 && i < 5; i++) {
-  //     let firstCardInRow = row.querySelectorAll('.card')[i];
-  //     document.querySelector('#bad').appendChild(firstCardInRow);
-  //     incrementPoints(isPersonsCard);
-  //   };
-  // } else {
-  //   for (let i = 0; row.childElementCount > 1 && i < 5; i++) {
-  //     let firstCardInRow = row.querySelectorAll('.card')[i];
-  //     firstCardInRow.remove();
-  //     incrementPoints(isPersonsCard);
-  //   };
-  // }
-  // while (row.firstChild) {
-  //   if(isPerson){
-  //     animateMotion(row.firstChild, document.querySelector('#bad'));
-  //     row.firstChild.addEventListener('transitionend', (e) => {
-  //       e.target.style.transform = 'none';
-  //       document.querySelector('#bad').appendChild(row.firstChild);
-  //     });
-  //   }else{
-  //     row.firstChild.remove();
-  //   }
-  //   incrementPoints(isPerson);
-  // }
+}
+
+function animateMotion(a, b){
+  function offset(el) {
+    let rect = el.getBoundingClientRect(),
+    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
+  }
+
+  const x = offset(b).left - offset(a).left + 80;
+  const y = offset(b).top - offset(a).top;
+
+  a.style.transform = 'translate('+ x + 'px,'+ y + 'px)';
 }
 
 function incrementPoints(isPerson) {
@@ -311,11 +264,9 @@ function isEnoughPoints(){
   }
 }
 
-document.querySelector('#selected-cards').addEventListener('dragover', dragover_handler);
-document.querySelector('#selected-cards').addEventListener('drop', drop_handler);
-
 function checkGameStatus() {
-  if(document.querySelector('#hand').childElementCount == 0){
+  if(document.querySelector('#hand').childElementCount == 0)
+  {
     document.querySelector('#container').style.opacity = 0.5;
     if (isEnoughPoints()) {
 
