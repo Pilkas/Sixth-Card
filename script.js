@@ -21,9 +21,9 @@ function fadeIn(el, duration, display) {
   (function fade() { (s.opacity = parseFloat(s.opacity)+step) > 1 ? s.opacity = 1 : setTimeout(fade, 25); })();
 }
 
-window.onload = function() {
-  newRound();
-};
+// window.onload = function() {
+//   newRound();
+// };
 
 let cardsInUse = [];
 let computerCards, personCards;
@@ -109,7 +109,7 @@ function getSuitableRow(cardNr){
   if (emptyRow) {console.log('Tuščia eilutė yra');
     suitableRow = emptyRow;
   } else {
-    console.log('tuščios eilutės nėra');
+    // console.log('tuščios eilutės nėra');
     const rowsWithLowerCards = rows.filter(row => {return row.lastChild.dataset.cardNumber < cardNumber;});
     const CardWithMinDiff = Math.max.apply(null, rowsWithLowerCards.map((row) => {return row.lastChild.dataset.cardNumber;}))
     suitableRow = rowsWithLowerCards.find(row => {return row.lastChild.dataset.cardNumber == CardWithMinDiff;});
@@ -146,8 +146,9 @@ function drop_handler(e){
 
 function performAction(){
   const selectedCards = Array.from(document.querySelectorAll('#selected-cards .card')).sort((a, b) => {return parseInt(a.dataset.cardNumber) - parseInt(b.dataset.cardNumber)});
-  console.log('Action, liko nepadėtų kortų', selectedCards);
+  console.log('Action, pasirinktos kortos: ', selectedCards);
 
+  document.querySelectorAll('#hand .card').forEach((card) => {card.removeEventListener('dragstart', dragstart_handler)});
   if (selectedCards[0]) {
 
     const card = selectedCards[0];
@@ -155,22 +156,26 @@ function performAction(){
     const rows = Array.from(document.querySelectorAll('.row'));
 
     if (suitableRow == null) {
+      console.log('Nėra kur padėti kortos');      
       if (isPersonsCard(card.dataset.cardNumber)) {
-        document.querySelectorAll('#hand .card').forEach((card) => {card.removeEventListener('dragstart', dragstart_handler)});
+        console.log('Žaidėjas renkasi kurią eilutę pasiimti');
+        // document.querySelectorAll('#hand .card').forEach((card) => {card.removeEventListener('dragstart', dragstart_handler)});
+        function selectRow(e){
+          const row = e.currentTarget;
+          takeCards(row, isPersonsCard(card.dataset.cardNumber));
+          rows.forEach((row) => {
+            row.classList.remove('red');
+            row.removeEventListener('click', selectRow);
+            // document.querySelectorAll('#hand .card').forEach((card) => {card.addEventListener('dragstart', dragstart_handler)});
+          })
+        }
         rows.forEach(row => {
           row.classList.add('red');
-          row.addEventListener('click', function selectRow(e){
-            const row = e.currentTarget;
-            takeCards(row, isPersonsCard(card.dataset.cardNumber));
-            rows.forEach((row) => {
-              row.classList.remove('red');
-              row.removeEventListener('click', selectRow, true);
-            });
-            document.querySelectorAll('#hand .card').forEach((card) => {card.addEventListener('dragstart', dragstart_handler)});
-          }, true);
+          row.addEventListener('click', selectRow);
         });
         return;
       } else {
+        console.log('Kompiuteris renkasi kurią eilutę pasiimti');        
         const rowWithLeastCards = Math.min.apply(null, rows.map((row) => {return row.childElementCount;}))
         const bestRowToTake = rows.find(row => {if(row.childElementCount == rowWithLeastCards){return row;}});
         takeCards(bestRowToTake, isPersonsCard(card.dataset.cardNumber));
@@ -178,74 +183,70 @@ function performAction(){
       }
     } else if (suitableRow) {
       if (parseInt(suitableRow.childElementCount) == 5) {
-        console.log('Ups! Tinkamoje eilutėje 5 kortos');
+        console.log('Ups! Tinkamoje eilutėje 5 kortos, reikia susirinkti kortas');
         takeCards(suitableRow, isPersonsCard(card.dataset.cardNumber));
         return;
       } else if (parseInt(suitableRow.childElementCount) < 5)  {
-        animateMotion(card, suitableRow.lastChild || suitableRow);
-        card.addEventListener('transitionend', (e) => {
-          e.target.style.transform = 'none';
-          suitableRow.appendChild(card);
-          console.log('Dedu', card.dataset.cardNumber, ' į tinkamą eilutę: ', suitableRow);
-          return performAction();
-        });
+        animateMotion(card, suitableRow.lastChild || suitableRow).then(
+          function () {
+            console.log('Dedu', card.dataset.cardNumber, ' į tinkamą eilutę: ', suitableRow);
+            card.style.transform = 'none';
+            suitableRow.appendChild(card);
+            return performAction();
+          })
       }
     }
   } else {
-    checkGameStatus(); // ar tikrai reikia?
     console.log('Ėjimas baigtas');
+    document.querySelectorAll('#hand .card').forEach((card) => {card.addEventListener('dragstart', dragstart_handler)});
+    checkGameStatus(); // ar tikrai reikia?
     return;
   }
 }
-// function placeCard(card){
-//   const suitableRow = getSuitableRow(card.dataset.cardNumber);
-//   console.log('Tinkama eilute: ', suitableRow);
-//   animateMotion(card, suitableRow.lastChild || suitableRow);
-//   card.addEventListener('transitionend', (e) => {
-//     e.target.style.transform = 'none';
-//     if(parseInt(suitableRow.childElementCount) == 5){
-//       takeCards(suitableRow, isPersonsCard(card.dataset.cardNumber));
-//     }
-//     suitableRow.appendChild(card);
-//
-//     if(document.querySelectorAll('#selected-cards .card').length > 0){performAction()};
-//   });
-// }
+
 function takeCards(row, isPerson){
   const cards = row.querySelectorAll('.card');
   if (cards[0]) {
     if (isPerson) {
-      animateMotion(cards[0], document.querySelector('#bad'));
-      cards[0].addEventListener('transitionend', (e) => {
-        e.target.style.transform = 'none';
-        document.querySelector('#bad').appendChild(cards[0]);
-        console.log('Žaidėjas pasiėmė', cards[0].dataset.cardNumber);
-        return takeCards(row, isPerson);
-      });
+      animateMotion(cards[0], document.querySelector('#bad')).then(
+        function () {
+          cards[0].style.transform = 'none';
+          document.querySelector('#bad').appendChild(cards[0]);
+          console.log('Žaidėjas pasiėmė', cards[0].dataset.cardNumber);
+          incrementPoints(isPerson);
+          return takeCards(row, isPerson);
+        }
+      )
     } else {
       console.log('Kompas pasiėmė', cards[0].dataset.cardNumber);
       cards[0].remove();
+      incrementPoints(isPerson);
       return takeCards(row, isPerson);
     }
-    incrementPoints(isPerson);
   } else {
     console.log('Paėmimo ciklas baigtas');
     return performAction();
   }
 }
 
-function animateMotion(a, b){
-  function offset(el) {
-    let rect = el.getBoundingClientRect(),
-    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
-  }
-
-  const x = offset(b).left - offset(a).left + 80;
-  const y = offset(b).top - offset(a).top;
-
-  a.style.transform = 'translate('+ x + 'px,'+ y + 'px)';
+function animateMotion(a, b) {
+  return new Promise((resolve) => {
+    function offset(el) {
+      let rect = el.getBoundingClientRect(),
+      scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+      scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
+    }
+    function transitionEnded () {
+      a.removeEventListener('transitionend', transitionEnded);
+      resolve();
+    }
+    
+    const x = offset(b).left - offset(a).left + 80;
+    const y = offset(b).top - offset(a).top;
+    a.addEventListener ('transitionend', transitionEnded)
+    a.style.transform = 'translate('+ x + 'px,'+ y + 'px)';
+  })
 }
 
 function incrementPoints(isPerson) {
@@ -265,15 +266,13 @@ function isEnoughPoints(){
 }
 
 function checkGameStatus() {
-  if(document.querySelector('#hand').childElementCount == 0)
-  {
+  if(document.querySelector('#hand').childElementCount == 0) {
     document.querySelector('#container').style.opacity = 0.5;
     if (isEnoughPoints()) {
 
       const personPoints = parseInt(document.querySelector('#person-points').textContent);
       const computerPoints = parseInt(document.querySelector('#pc-points').textContent);
-      const winner = (personPoints < computerPoints)? 'You won!' : 'Computer won! :(';
-      const finalScore = computerPoints + ':' + personPoints;
+      const winner = (personPoints < computerPoints)? 'You won!' : 'Computer won!';
 
       const message = `
       <h2>Game over!</h2>
@@ -285,7 +284,7 @@ function checkGameStatus() {
       document.querySelector('#person-points').textContent = 0;
       document.querySelector('#pc-points').textContent = 0;
       endRound();
-    }else {
+    } else {
       const message = `
       <h2>Round over</h2>
       <p>Keep up!</p>

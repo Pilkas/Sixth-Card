@@ -14,7 +14,7 @@ body {
   line-height: 1.5;
   padding: 25px;
   border: #fff solid 3px;
-  display: none;
+  display: block;
 }
 #popup{
   background-color: #96ceb4;
@@ -30,7 +30,7 @@ button {
   cursor: pointer;
 }
 #container {
-  /*display: none;*/
+  display: none;
 }
 #container h1{
   color: #ff6f69;
