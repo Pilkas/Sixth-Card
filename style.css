@@ -1,6 +1,7 @@
 body {
-  /* background-color: #ffeead; */
-  background-color: dimgray;
+  background-color: #ffeead;
+  /* background-color: dimgray; */
+  background-color: #96ceb4;
   font-family: 'Helvetica', sans-serif;
   color: #fff;
 }
@@ -9,7 +10,7 @@ body {
   top: 35%;
   left: 50%;
   transform: translate(-50%, -35%);
-  width: 400px;
+  width: 33%;
   background-color: #ff6f69;
   line-height: 1.5;
   padding: 25px;
@@ -33,19 +34,17 @@ button {
   display: none;
 }
 #container h1{
-  color: #ff6f69;
   text-align: center;
 }
 #used-cards{
   display: flex;
 }
-#pc-bad {
-  background-color: yellow;
-}
+
 #bad {
   margin: 10px;
   border: 5px #ffcc5c solid;
   border-radius: 10px;
+  height: 220px;
 }
 #bad .card{
   opacity: 0.5;
@@ -61,11 +60,11 @@ button {
 }
 
 #selected-cards {
-  border: #88d8b0 5px dashed;
+  border: #fff 5px dashed;
   border-radius: 10px;
   width: 200px;
   height: 200px;
-  margin: 50px;
+  margin: 67px 50px 50px 50px;
 }
 #selected-cards .person {
   background-color: #a0db8e;
@@ -84,7 +83,7 @@ button {
   height: 220px;
 }
 .row {
-  border: 5px #88d8b0 solid;
+  border: 5px #ffcc5c solid;
   border-radius: 10px;
   width: 400px;
   height: 110px;
@@ -109,7 +108,6 @@ button {
   cursor: pointer;
 }
 #score {
-  color: #ff6f69;
   font-size: 24px;
   text-align: center;
 }

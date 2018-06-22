@@ -8,7 +8,17 @@
 <body>
 <div id="rules">
   <h1>Sixth Card</h1>
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  <h2>Game guide</h2>
+  <p>The main goal of the game is to lay out your dealt cards and collect as little cards as possible. There are 100 cards in the deck.</p>
+  <p>To get rid off your cards you need to select a card and place it by dragging it in the middle of the table. 
+    Cards will be put in the rows automatically by these rules:</p>
+  <ul>
+    <li>Chosen card is placed in the end of row in ascending order next to card with closest number</li>
+    <li>If there is no row with lower card, player has to choose which row to collect by clicking on it</li>
+    <li>If suitable row has five cards, player has to collect all cards in that row and put his card in that row (it is done automatically)</li>
+  </ul>
+  <p>Game is played until one of the player collects 10 cards. First player who collects 10 cards - loses.</p>
+  
   <button id="start">Start Game!</button>
 </div>
 <div id="container">
@@ -28,8 +38,9 @@
     </div>
     <div id="selected-cards"></div>
     <div id="player">
-      <h2>Your cards</h2>
+      <h2>Dealt cards</h2>
       <div id="hand"></div>
+      <h2>Collected cards</h2>
       <div id="bad"></div>
     </div>
   </div>
